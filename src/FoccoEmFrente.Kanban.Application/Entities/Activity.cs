@@ -11,5 +11,9 @@ namespace FoccoEmFrente.Kanban.Application.Entities
         public string Title { get; set; }
 
         public ActivityStatus Status { get; set; }
+
+        public Guid UserId { get; set; }
+
+        public int Order { get; set; }
     }
 }

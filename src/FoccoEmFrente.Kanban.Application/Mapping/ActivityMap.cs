@@ -20,6 +20,13 @@ namespace FoccoEmFrente.Kanban.Application.Mapping
             builder.Property(c => c.Status)
                    .HasConversion<int>()
                    .IsRequired();
+
+            builder.Property(c => c.UserId)
+                .IsRequired();
+
+            builder.Property(c => c.Order)
+                .IsRequired();
+
         }
     }
 }
