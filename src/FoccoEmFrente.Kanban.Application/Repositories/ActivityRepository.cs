@@ -3,6 +3,7 @@ using FoccoEmFrente.Kanban.Application.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,10 +22,13 @@ namespace FoccoEmFrente.Kanban.Application.Repositories
         
         
         }
+
+        public IUnitOfWork UnitOfWork => DbContext;
+
         public Activity Add(Activity activity)
         {
             var entry = DbSet.Add(activity);
-            DbContext.SaveChanges();
+            
             return entry.Entity;
         }
 
@@ -33,20 +37,34 @@ namespace FoccoEmFrente.Kanban.Application.Repositories
             DbContext.Dispose();
         }
 
-        public async Task<IEnumerable<Activity>> GetAllAsync()
+        public async Task<bool> ExistsAsync(Guid id,Guid userId)
         {
-            return await DbSet.ToListAsync();
+            return await DbSet.Where(f => f.Id == id && f.UserId == userId).AnyAsync();
         }
 
-        public async Task<Activity> GetByIdAsync(Guid Id)
+        public Task<bool> ExistsAsync(Guid id)
         {
-            return await DbSet.FindAsync(Id);
+            throw new NotImplementedException();
         }
+
+        public async Task<IEnumerable<Activity>> GetAllAsync(Guid userId)
+        {
+            return await DbSet
+                .Where(a=> a.UserId == userId)
+                .ToListAsync();
+        }
+
+        public async Task<Activity> GetByIdAsync(Guid Id, Guid userId)
+        {
+            return await DbSet
+                 .Where(a => a.UserId == userId && a.Id ==Id)
+                .FirstOrDefaultAsync();
+        }
+
 
         public Activity Remove(Activity activity)
         {
         var entry =  DbSet.Remove(activity);
-            DbContext.SaveChanges();
             return entry.Entity;
            
         }
@@ -54,7 +72,6 @@ namespace FoccoEmFrente.Kanban.Application.Repositories
         public Activity Update(Activity activity)
         {
             var entry = DbSet.Update(activity);
-            DbContext.SaveChanges();
             return entry.Entity;
         }
     }
