@@ -26,6 +26,9 @@ namespace FoccoEmFrente.Kanban.Application.Migrations
                         .HasColumnName("Id")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -33,6 +36,9 @@ namespace FoccoEmFrente.Kanban.Application.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(100)")
                         .HasMaxLength(100);
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
