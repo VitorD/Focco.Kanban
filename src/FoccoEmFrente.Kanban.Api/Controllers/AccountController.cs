@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using FoccoEmFrente.Kanban.Api.Configurations;
@@ -51,7 +52,7 @@ namespace FoccoEmFrente.Kanban.Api.Controllers
                 return BadRequest(string.Join("; ", errors));
             }
 
-            return Ok(GetFullJwt());
+            return Ok(await GetFullJwt(user.Email));
         }
 
         [HttpPost]
@@ -62,7 +63,7 @@ namespace FoccoEmFrente.Kanban.Api.Controllers
 
             if (result.Succeeded)
             {
-                var fullJwt = GetFullJwt();
+                var fullJwt = await GetFullJwt(loginUser.Email);
                 return Ok(fullJwt);
             }
 
@@ -74,22 +75,28 @@ namespace FoccoEmFrente.Kanban.Api.Controllers
             return BadRequest("Incorrect user or password");
         }
 
-        private string GetFullJwt()
+        private async  Task<string> GetFullJwt(string email)
         {
-            var tokenDescription = GetSecurityTokenDescriptor();
+            var user = await _userManager.FindByEmailAsync(email);
+            var tokenDescription = GetSecurityTokenDescriptor(user);
             return GenerateToken(tokenDescription);
         }
 
-        private SecurityTokenDescriptor GetSecurityTokenDescriptor()
+        private SecurityTokenDescriptor GetSecurityTokenDescriptor(IdentityUser user)
         {
             var key = Encoding.ASCII.GetBytes(_appSettings.SecretKey);
+
+            var claimsIdentity = new ClaimsIdentity();
+            claimsIdentity.AddClaim(new Claim(JwtRegisteredClaimNames.NameId, user.Id));
+            claimsIdentity.AddClaim(new Claim(JwtRegisteredClaimNames.Email, user.Email));
 
             var tokenDescription = new SecurityTokenDescriptor
             {
                 Issuer = _appSettings.Issuer,
                 Audience = _appSettings.Audience,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
-                Expires = DateTime.UtcNow.AddMonths(12)
+                Expires = DateTime.UtcNow.AddMonths(12),
+                Subject = claimsIdentity
             };
 
             return tokenDescription;
