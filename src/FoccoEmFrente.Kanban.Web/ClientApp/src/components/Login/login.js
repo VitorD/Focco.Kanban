@@ -1,61 +1,57 @@
-import React from "react";
-function Botao({onVoltar}){
-   return (
-      <>
-      <button className="btn btn-primary" type="submit">Entrar</button>
-      <button className="btn btn-secondary" onClick={onVoltar}>Voltar</button>
-      </>
-   )
-}
-function Senha(){
-   return (
-      <>
-      <label htmlFor="Senha">Senha</label>
-      <input id="senha" type="password" placeholder ="Senha"></input>
-           
-      </>
-   )
+import React,{ useState} from "react";
+import Request from "../Utils/HttpRequest";
 
-}
-function Email(){
+export default function Login({ history }) {
 
-   return (
-      <>
-      <label htmlFor="email">Email</label>
-      <input id="email" type="email" placeholder ="E-mail"></input>
-             
-      </>
-   )
-}
-function Paragrafo(){
-   return <p>Bem vindo ao <strong>Sunday.com</strong>, melhor sistema para gestao de tasks</p>
+   const [formLogin, setFormLogin] = useState({ email: "", password: "" });
 
-}
-function Div(){}
-function Macro(variavel){
-   return(<>
+   const setEmail = (event) => {
+      setFormLogin({...formLogin, email: event.target.value});
+   }
 
-      <div style = {{width: "450px"}}>
-               <form>
-                  {variavel}
-               </form>
-            </div>
-         </>
-         )
+   const setPassword = (event) => {
+      setFormLogin({...formLogin, password: event.target.value});
+   }
 
-}
-export default function Login({history}) {
-   
-   const onVoltar = () =>
-   {
+   const onLogin = async (event) => {
+      event.preventDefault();
+
+      const response = await new Request("account/login","POST")
+      .setBody(formLogin)
+      .send();
+            
+      if(!response.ok)
+      {
+         window.alert(response.errorMessage);
+         return;
+      }
+
+      localStorage.setItem("token",response.data);
       history.push("/");
    }
 
+   const onVoltar = () => {
+      history.push("/");
+   }
+ 
+
    return (
-      <div>
-         <Macro variavel={Email}/>
+
+      <div style={{ width: "450px" }}>
+         <p>Bem vindo ao <strong>Sunday.com</strong>, melhor sistema para gestao de tasks</p>
+
+         <form onSubmit={onLogin}>
+            <label htmlFor="email">Email</label>
+            <input id="email" type="email" placeholder="E-mail" value={formLogin.email} onChange={setEmail}></input>
+            <label htmlFor="Senha">Senha</label>
+            <input id="senha" type="password" placeholder="Senha" value={formLogin.password} onChange={setPassword}></input>
+
+            <button className="btn btn-primary" type="submit">Entrar</button>
+            <button className="btn btn-secondary" onClick={onVoltar}>Voltar</button>
+
+         </form>
       </div>
-      
-   
+
    );
+
 }

@@ -91,3 +91,13 @@ body {
    background-color: #cecece;
    color: #444;
 }
+
+.activity {
+   background-color: white;
+   padding: 10px;
+   border-radius: 10px;
+   margin: 10px 0;
+   min-height: 60px;
+   font-size: 18px;
+  
+}
