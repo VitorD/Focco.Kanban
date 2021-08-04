@@ -69,6 +69,45 @@ export default function Home({ history }) {
         history.push("/login");
     };
 
+    const updateActivity = async (activity) => {
+        const response = await new Request('activities',"PUT")
+        .setToken(token)
+        .setBody(activity)
+        .send();
+
+        if (!response.ok) {
+            window.alert(["nao foi possivel atualizar a tarefa",
+                response.errorMessage,
+            ]);
+            await loadActivities();
+            return;
+        }
+
+    }
+
+    const updateActivityStatus = async (activityId,status) => {
+        const action = status === 0 ? "todo" : status === 1 ? "doing" : "done";
+
+        const response = await new Request(`activities/${activityId}/${action}`,"PUT")
+        .setToken(token)
+        .send();
+
+        if (!response.ok) {
+            window.alert(["nao foi possivel atualizar o status da tarefa",
+                response.errorMessage,
+            ]);
+            await loadActivities();
+            return;
+        }
+    //modo manual
+    // activities.find((a) => a.id === activityId).status = status;
+    // setActivities([...activities]);
+        await loadActivities();
+
+    };
+
+
+
 
     useEffect(loadActivities, []);
 
@@ -86,7 +125,10 @@ export default function Home({ history }) {
                             <Pipe key={index}
                              activities={activities} 
                              status={status} 
-                             onDelete={deleteActivity} />
+                             onDelete={deleteActivity}
+                             onUpdate={updateActivity} 
+                             onActivityDrops={(activityId) => updateActivityStatus(activityId,status)}
+                             />
                         );
                     })
                 }
