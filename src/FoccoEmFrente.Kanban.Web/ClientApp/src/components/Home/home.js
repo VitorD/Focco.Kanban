@@ -96,7 +96,6 @@ export default function Home({ history }) {
             window.alert(["nao foi possivel atualizar o status da tarefa",
                 response.errorMessage,
             ]);
-            await loadActivities();
             return;
         }
     //modo manual

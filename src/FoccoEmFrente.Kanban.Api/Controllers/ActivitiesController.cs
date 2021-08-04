@@ -96,26 +96,26 @@ namespace FoccoEmFrente.Kanban.Api.Controllers
         }
 
         [HttpPut("{Id}/todo")]
-        public async Task<IActionResult> AtualizarStatusParaTodo(Guid id)
+        public async Task<IActionResult> AtualizarStatusParaTodo(Guid Id)
         {
 
-            var activity = await _activityService.UpdateToTodoAsync(id,UserId);
+            var activity = await _activityService.UpdateToTodoAsync(Id, UserId);
             return Ok(activity);
         }
 
         [HttpPut("{Id}/doing")]
-        public async Task<IActionResult> AtualizarStatusParaDoing(Guid id)
+        public async Task<IActionResult> AtualizarStatusParaDoing(Guid Id)
         {
 
-            var activity = await _activityService.UpdateToDoingAsync(id, UserId);
+            var activity = await _activityService.UpdateToDoingAsync(Id, UserId);
             return Ok(activity);
         }
 
         [HttpPut("{Id}/done")]
-        public async Task<IActionResult> AtualizarStatusParaDone(Guid id)
+        public async Task<IActionResult> AtualizarStatusParaDone(Guid Id)
         {
 
-            var activity = await _activityService.UpdateToDoneAsync(id, UserId);
+            var activity = await _activityService.UpdateToDoneAsync(Id, UserId);
             return Ok(activity);
         }
 

@@ -6,9 +6,9 @@ namespace FoccoEmFrente.Kanban.Application.Enums
 {
    public enum ActivityStatus
     {
-        Done = 0,
-        Todo = 1,
-        Doing = 2
+        Todo = 0,
+        Doing = 1,
+        Done = 2
 
     }
 }
